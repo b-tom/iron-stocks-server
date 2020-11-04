@@ -8,7 +8,7 @@ const path = require('path');
 const createError = require('http-errors');
 
 // require packages to be installed 
-const cors = require('cores');
+const cors = require('cors');
 const app = express();
 
 //Middleware Setup 
