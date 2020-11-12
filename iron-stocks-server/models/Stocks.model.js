@@ -1,15 +1,12 @@
 const { Schema, model } = require('mongoose');
 
-const stocksSchema = new Schema(
+const stockSchema = new Schema(
     {
         symbol: {
             type: String,
-            trim: true,
-            unique: true
         },
         name: {
             type: String,
-            lowercase: true, 
         },
     },
     {
@@ -17,4 +14,4 @@ const stocksSchema = new Schema(
     }
 );
 
-module.exports = model('User', userSchema);
+module.exports = model('Stock', stockSchema);

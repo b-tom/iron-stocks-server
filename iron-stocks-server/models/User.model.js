@@ -19,7 +19,13 @@ const userSchema = new Schema(
         passwordHash: {
             type: String,
             required: [ true, 'Password is required.']
-        }
+        },
+        stockFollowed: [{
+            type:Schema.Types.ObjectId, ref:'Following'
+        }],
+        collections: [{
+            type: Schema.Types.ObjectId, ref:'Collection'
+        }]
     },
     {
         timestamps: true

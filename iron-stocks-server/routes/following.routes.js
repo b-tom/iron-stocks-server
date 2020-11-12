@@ -1,30 +1,39 @@
 const express = require('express');
 const router = express.Router();
 
+const User = require('../models/User.model');
 const Following = require('../models/Following.model');
 
 // POST -> Add a stock to the following list
 // <form action='/follow' method='POST'>
 router.post('/api/following', (req, res, next) => {
-    console.log(req.body);
     Following.create(req.body)
-        .then(followingDoc => res.status(200).json({ stock: followingDoc }))
-        .catch(err => next(err));
+        .then(async followingDoc => { 
+            await User.findByIdAndUpdate(followingDoc.user, {$push: {stockFollowed: followingDoc._id}});
+            res.status(200).json({ stock: followingDoc })
+        })
+        .catch(err => console.log(err));
 });
 
 // GET -> Get all the followed stocks
 router.get('/api/following', (req, res) => {
     Following.find()
-        .then(stocksFromDB => res.status(200).json({ stocks:stocksFromDB }))
+        .then(stocksFromDB => {
+            res.status(200).json({ stocks:stocksFromDB })
+        })
         .catch(err => next(err));
 });
 
 // POST -> delete a stock from following
 // <form action="/following/{{this._id}}/delete" method="post">
 router.post('/api/following/:stockId/delete', (req, res) => {
-    Following.findByIdAndRemove(req.params.stockId)
-        .then(() => res.json({ message:'Successfully removed!' }))
-        .catch(err => next(err));
+
+    User.findByIdAndUpdate(req.user._id, {$pull: {stockFollowed: req.params.stockId}})
+        .then(() => {
+            Following.findByIdAndRemove(req.params.stockId)
+                .then(() => res.json({ message:'Successfully removed!' }))
+                .catch(err => next(err));
+        }).catch(err => console.log({ err }));
 });
 
 // POST -> Update the followed stocks

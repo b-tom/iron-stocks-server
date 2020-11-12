@@ -10,7 +10,7 @@ passport.use(
             usernameField: 'email'
         },
         (email, password, next) => {
-            User.findOne({ email })
+            User.findOne({ email }).populate('stockFollowed')
                 .then(userFromDB => {
                     if(!userFromDB) {
                         next(null, false, { message: 'Incorrect email.' });
