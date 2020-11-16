@@ -5,6 +5,7 @@ const passport = require('passport');
 
 const User = require('../models/User.model');
 const Following = require('../models/Following.model');
+const Symbol = require('../models/Symbol.model')
 
 const bcryptjs = require('bcryptjs');
 const saltRounds = 10;
@@ -93,16 +94,5 @@ router.get('/api/isLoggedIn', (req, res) => {
     }
     res.status(401).json({ message: 'Unauthorized access!' });
 });
-
-//get route to get all the stocks that are being followed
-router.get('/api/userFollowingStocks', (req, res) => {
-    console.log('user ID' + req.user._id)
-    User.find({_id : {$in : [req.user._id]}})
-        .populate('stockFollowed')    
-    .then(followedStock => {
-        const onlyStocks = followedStock[0].stockFollowed
-        console.log(onlyStocks)
-        res.status(200).json({ stocks: onlyStocks })})
-})
 
 module.exports = router;

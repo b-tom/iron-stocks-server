@@ -17,7 +17,7 @@ router.post('/api/collections', (req, res, next) => {
 
 //GET -> GET ALL THE COLLECTIONS
 router.get('/api/collections', (req, res) => {
-    Collection.find()
+    Collection.find({user: req.user._id})
         .then(collectionsFromDB =>{
             res.status(200).json({ collections: collectionsFromDB })
         })
@@ -36,16 +36,45 @@ router.post('/api/collections/:collectionId/delete', (req, res) => {
 
 //POST -> UPDATE A COLLECTION
 router.post('/api/collections/:collectionId/update', (req, res) => {
-    Collection.findByIdAndUpdate(req.params.id, req.body, { new:true })
-        .then(updatedCollection => res.status(200).json({ collection: updatedCollection }))
+    Collection.findByIdAndUpdate(req.params.collectionId, req.body, { new:true })
+        .then(updatedCollection => {
+                res.status(200).json({ collection: updatedCollection })
+            })
         .catch(err => next(err));
 });
 
-//GET -> GET COLLECTION DETAILS
+//GET -> GET USER COLLECTIONS DETAILS
 router.get('/api/collections/:collectionId', (req, res) => {
-    Collection.findById(req.params.stockId)
-        .then(foundCollection => res.status(200).json({ collection: foundCollection }))
+        Collection.findById(req.params.collectionId)
+        .populate('user')
+        .populate('symbols')
+        .then(foundCollection => {
+            res.status(200).json({ collection: foundCollection })
+        })
         .catch(err => next(err));
+});
+
+//GET -> GET ALL COLLECTIONS
+router.get('/api/allCollections', (req, res) => {
+    Collection.find()
+    .populate('user')
+    .populate('symbols')
+        .then(collectionsFromDB =>{
+            console.log(collectionsFromDB)
+            res.status(200).json({ allCollections: collectionsFromDB })
+        })
+        .catch(err => console.log(err));
+});
+
+//POST -> ADD STOCK TO COLLECTION
+router.post('/api/collections/:collectionId/addStock', (req, res) => {
+    console.log(req.body)
+    Collection.findByIdAndUpdate(req.params.collectionId, req.body , { new: true })
+    .then(updatedCollection => {
+        console.log(updatedCollection)
+        res.status(200).json({ message:'Stock successfuly added!' })
+    })
+    .catch(err => console.log(err));
 });
 
 module.exports = router ;

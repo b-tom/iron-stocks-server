@@ -17,7 +17,8 @@ router.post('/api/following', (req, res, next) => {
 
 // GET -> Get all the followed stocks
 router.get('/api/following', (req, res) => {
-    Following.find()
+    Following.find({user:req.user._id})
+        .populate('symbol')
         .then(stocksFromDB => {
             res.status(200).json({ stocks:stocksFromDB })
         })

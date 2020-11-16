@@ -17,6 +17,12 @@ const collectionSchema = new Schema(
         },
         user:{
             type: Schema.Types.ObjectId, ref:'User'
+        },
+        tags: {
+            type: [String],
+        },
+        followers:{
+            type: Schema.Types.ObjectId, ref:'User'
         }
     },
     {

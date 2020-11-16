@@ -25,6 +25,9 @@ const userSchema = new Schema(
         }],
         collections: [{
             type: Schema.Types.ObjectId, ref:'Collection'
+        }],
+        followedCollections: [{
+            type: Schema.Types.ObjectId, ref:'Collection'
         }]
     },
     {

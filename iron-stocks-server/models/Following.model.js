@@ -4,7 +4,7 @@ const { Schema, model } = mongoose;
 const followingSchema = new Schema(
     {
         symbol: {
-            type: String,
+            type: Schema.Types.ObjectId, ref:'Symbol'
         },
         currentValue: {
             type: Number,
